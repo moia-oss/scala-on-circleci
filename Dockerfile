@@ -14,26 +14,26 @@ USER root
 # Environment variables
 ENV SCALA_VERSION=2.12.8
 ENV KUBECTL_VERSION=v1.14.2
-ENV HOME=/config
+ENV SONAR_SCANNER_VERSION=3.3.0.1492
+ENV SONAR_SCANNER_PACKAGE=sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
+ENV SONAR_SCANNER_HOME=/home/sonar-scanner-${SONAR_SCANNER_VERSION}/bin
 
 # Scala expects this file
 RUN touch /usr/lib/jvm/java-8-openjdk-amd64/release
 
 # Install Scala
 ## Piping curl directly in tar
-RUN \
-  curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C /root/ && \
+RUN curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C /root/ && \
   echo >> /root/.bashrc && \
-  echo "export PATH=~/scala-$SCALA_VERSION/bin:$PATH" >> /root/.bashrc
+  echo "export PATH=~/scala-$SCALA_VERSION/bin:\$PATH" >> /root/.bashrc
 
 # Install the AWS CLI
-# RUN set -x && \
-RUN apt-get install -y bash ca-certificates coreutils curl gawk git grep groff gzip jq less python sed tar zip && \
-    curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
-    unzip awscli-bundle.zip
+RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
+  unzip awscli-bundle.zip
 RUN ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws && \
     rm awscli-bundle.zip && \
     rm -Rf awscli-bundle
+RUN /usr/local/bin/aws --version
 
 # Install kubectl
 # Note: Latest version may be found on:
@@ -43,12 +43,14 @@ RUN set -x \
   && mv kubectl /usr/local/bin/kubectl \
   && chmod +x /usr/local/bin/kubectl
 
-# Create non-root user (with a randomly chosen UID/GUI).
-RUN useradd --uid 2342 --home /config kubectl
-
-USER kubectl
-
 RUN kubectl version --client
+
+# Install Sonar-Scanner
+RUN curl -OL https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/$SONAR_SCANNER_PACKAGE && \
+  unzip ${SONAR_SCANNER_PACKAGE} -d /home && \
+  rm ${SONAR_SCANNER_PACKAGE}
+
+RUN echo "export PATH=${SONAR_SCANNER_HOME}:\$PATH" >> ~/.bashrc
 
 # Define working directory
 WORKDIR /root
