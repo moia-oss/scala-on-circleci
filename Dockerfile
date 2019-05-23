@@ -1,28 +1,28 @@
 # Dockerfile that contains
 # - Scala
-# - SBT (from base image)
-# - kubectl
 # - AWS CLI
+# - kubectl
+# - sonar-scanner
+# - Java 8 JDK (from base image)
+# - SBT (from base image)
 # - Docker (from base image)
 
 # Pull base image (https://circleci.com/docs/2.0/circleci-images/#openjdk)
 # https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u212-jdk-stretch/Dockerfile
 FROM circleci/openjdk:8u212-jdk-stretch
 
-USER root
-
 # Environment variables
 ENV SCALA_VERSION=2.12.8
 ENV KUBECTL_VERSION=v1.14.2
 ENV SONAR_SCANNER_VERSION=3.3.0.1492
 ENV SONAR_SCANNER_PACKAGE=sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
-ENV SONAR_SCANNER_HOME=/home/sonar-scanner-${SONAR_SCANNER_VERSION}/bin
+
+USER root
 
 # Install Scala
 RUN touch /usr/lib/jvm/java-8-openjdk-amd64/release && \
-  curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C /home/circleci/ && \
-  echo >> /home/circleci/.bashrc && \
-  echo "export PATH=~/scala-$SCALA_VERSION/bin:\$PATH" >> /home/circleci/.bashrc
+  curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C /opt/ && \
+  ln -s /opt/scala-* /opt/scala
 
 # Install the AWS CLI
 RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
@@ -40,9 +40,11 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL
 
 # Install Sonar-Scanner
 RUN curl -LO https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/$SONAR_SCANNER_PACKAGE && \
-  unzip ${SONAR_SCANNER_PACKAGE} -d /home && \
-  rm ${SONAR_SCANNER_PACKAGE} && \
-  echo "export PATH=${SONAR_SCANNER_HOME}:\$PATH" >> /home/circleci/.bashrc
+  unzip ${SONAR_SCANNER_PACKAGE} -d /opt/ && \
+  ln -s /opt/sonar-scanner-* /opt/sonar-scanner && \
+  rm ${SONAR_SCANNER_PACKAGE}
+
+ENV PATH="/opt/scala/bin:/opt/sonar-scanner/bin:$PATH"
 
 USER circleci
 
