@@ -6,10 +6,11 @@ This repository contains **Dockerfile** of:
 * [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
 * [AWS CLI](https://aws.amazon.com/cli/)
 * [Docker](https://www.docker.com/)
+* [Sonar-Scanner](https://docs.sonarqube.org/latest/)
 
 ## Base Docker Image ##
 
-* [circleci/openjdk](https://circleci.com/docs/2.0/circleci-images/#openjdk)
+* [circleci/openjdk:8u212-jdk-stretch](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u212-jdk-stretch/Dockerfile) [(background)](https://circleci.com/docs/2.0/circleci-images/#openjdk)
 
 ## Installation ##
 
@@ -62,8 +63,7 @@ This code is open source software licensed under the [Apache 2.0 License]("http:
    * [circleci/openjdk](https://circleci.com/docs/2.0/circleci-images/#openjdk)
    * Scala (https://github.com/scala/scala/releases)
    * Kubectl (https://github.com/kubernetes/kubernetes/releases) 
-2. Make sure theimage can be built with `docker build .`
+2. Make sure the image can be built with `docker build .`
 3. Commit and push the changes
 4. Create a release on GitHub (https://github.com/moia-dev/scala-on-circleci/releases)
-5. Build and tag the image (see above)
-6. Push to the docker hub
+5. Docker Hub will build the image automatically
