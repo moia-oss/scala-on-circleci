@@ -9,11 +9,11 @@
 
 # Pull base image (https://circleci.com/docs/2.0/circleci-images/#openjdk)
 # https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u212-jdk-stretch/Dockerfile
-FROM circleci/openjdk:8u212-jdk-stretch
+FROM circleci/openjdk:8u222-jdk-stretch
 
 # Environment variables
 ENV SCALA_VERSION=2.12.9
-ENV KUBECTL_VERSION=v1.14.2
+ENV KUBECTL_VERSION=v1.14.5
 ENV SONAR_SCANNER_VERSION=3.3.0.1492
 ENV SONAR_SCANNER_PACKAGE=sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
 
