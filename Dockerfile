@@ -60,3 +60,5 @@ USER circleci
 
 # Define working directory
 WORKDIR /home/circleci
+
+RUN echo -e "Tag for this image:\n$(java -version 2>&1 | head -n 1 | grep -o '[[:digit:]._]*')-${SCALA_VERSION}-${KUBECTL_VERSION}-1"
