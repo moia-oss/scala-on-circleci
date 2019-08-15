@@ -60,3 +60,5 @@ USER circleci
 
 # Define working directory
 WORKDIR /home/circleci
+
+RUN echo -e "Tag for this image:\n8u222-${SCALA_VERSION}-${KUBECTL_VERSION}"
