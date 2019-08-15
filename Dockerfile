@@ -19,13 +19,20 @@ ENV SONAR_SCANNER_PACKAGE=sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
 
 USER root
 
-SHELL ["/bin/bash", "-o", "pipefail", "-x", "-c"]
+SHELL ["/bin/bash", "-eo", "pipefail", "-x", "-c"]
 
 # Install Scala
 RUN touch /usr/lib/jvm/java-8-openjdk-amd64/release && \
   curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C /opt/ && \
   ln -s /opt/scala-* /opt/scala && \
   /opt/scala/bin/scala -version
+
+# Initialise SBT to download scala and the compiler-bridge
+RUN export TEMP="$(mktemp -d)" && \
+    cd "${TEMP}" && \
+    echo "class Question { def answer = 42 }" > Question.scala && \
+    sbt "set scalaVersion := \"${SCALA_VERSION}\"" compile && \
+    rm -r "${TEMP}"
 
 # Install the AWS CLI
 RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
