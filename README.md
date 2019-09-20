@@ -10,60 +10,19 @@ This repository contains **Dockerfile** of:
 
 ## Base Docker Image ##
 
-* [circleci/openjdk:8u212-jdk-stretch](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u212-jdk-stretch/Dockerfile) [(background)](https://circleci.com/docs/2.0/circleci-images/#openjdk)
+* `circleci/openjdk:8u222-jdk-stretch` provides the JDK, SBT and Docker.
+  * [Dockerfile](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u222-jdk-stretch/Dockerfile)
+  * [background](https://circleci.com/docs/2.0/circleci-images/#openjdk)
+  * [Tag on Dockerhub](https://hub.docker.com/r/circleci/openjdk/tags?page=1&name=8u222-jdk-stretch)
+  
+## Additions ##
 
-## Installation ##
+We add Scala (version in tag), AWS CLI (latest), Kubectl (version in tag) and Sonar-Scanner (version `3.3`).
 
-1. Install [Docker](https://www.docker.com)
-2. Pull [automated build](https://registry.hub.docker.com/u/moia/scala-on-circleci) from public [Docker Hub Registry](https://registry.hub.docker.com):
-```
-docker pull moia/scala-on-circleci
-```
-Alternatively, you can build an image from Dockerfile:
-```
-docker build -t moia/scala-on-circleci github.com/moia-dev/scala-on-circleci
-```
+## Dockerhub ##
 
-
-## Usage ##
-
-```
-docker run -it --rm moia/scala-on-circleci
-```
-
-## Development Notes
-
-### Building and publishing docker image
-
-1. Pull latest version from github:
-
-   ```
-   git pull origin master
-   git fetch --tags
-   ```
-2. Build Docker image:
-
-   ```
-   docker build -t moia/scala-on-circleci:8u212-2.12.8-1.14.2 .
-   ```
-3. Push Docker image:
-
-   ```
-   docker login
-   docker push moia/scala-on-circleci:8u212-2.12.8-1.14.2
-   ```
+This image is automatically released to Dockerhub for every tag: https://hub.docker.com/r/moia/scala-on-circleci
 
 ## License ##
 
 This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
-
-## Update
-
-1. Edit `Dockerfile` and insert the latest versions of
-   * [circleci/openjdk](https://circleci.com/docs/2.0/circleci-images/#openjdk)
-   * Scala (https://github.com/scala/scala/releases)
-   * Kubectl (https://github.com/kubernetes/kubernetes/releases) 
-2. Make sure the image can be built with `docker build .`
-3. Commit and push the changes
-4. Create a release on GitHub (https://github.com/moia-dev/scala-on-circleci/releases)
-5. Docker Hub will build the image automatically
