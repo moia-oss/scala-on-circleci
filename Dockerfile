@@ -8,12 +8,12 @@
 # - Docker (from base image)
 
 # Pull base image (https://circleci.com/docs/2.0/circleci-images/#openjdk)
-# https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u212-jdk-stretch/Dockerfile
-FROM circleci/openjdk:8u222-jdk-stretch
+# https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u232-jdk/Dockerfile
+FROM circleci/openjdk:8u232-jdk
 
 # Environment variables
-ENV SCALA_VERSION=2.12.10
-ENV KUBECTL_VERSION=v1.14.8
+ENV SCALA_VERSION=2.13.1
+ENV KUBECTL_VERSION=v1.16.1
 ENV SONAR_SCANNER_VERSION=3.3.0.1492
 ENV SONAR_SCANNER_PACKAGE=sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
 
@@ -33,6 +33,7 @@ RUN export TEMP="$(mktemp -d)" && \
     echo "class Question { def answer = 42 }" > Question.scala && \
     sbt "set scalaVersion := \"${SCALA_VERSION}\"" compile && \
     rm -r "${TEMP}"
+RUN sbt --version
 
 # Install the AWS CLI
 RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
