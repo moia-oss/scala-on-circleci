@@ -9,7 +9,7 @@
 
 # Pull base image (https://circleci.com/docs/2.0/circleci-images/#openjdk)
 # https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u232-jdk/Dockerfile
-FROM circleci/openjdk:11
+FROM circleci/openjdk:11.0.5-jdk-stretch
 
 # Environment variables
 ENV SCALA_VERSION=2.13.1
@@ -21,19 +21,13 @@ USER root
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-x", "-c"]
 
-# Install Scala
-RUN touch /usr/lib/jvm/java-8-openjdk-amd64/release && \
-  curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C /opt/ && \
-  ln -s /opt/scala-* /opt/scala && \
-  /opt/scala/bin/scala -version
-
-# Initialise SBT to download scala and the compiler-bridge
-RUN export TEMP="$(mktemp -d)" && \
-    cd "${TEMP}" && \
-    echo "class Question { def answer = 42 }" > Question.scala && \
-    sbt "set scalaVersion := \"${SCALA_VERSION}\"" compile && \
-    rm -r "${TEMP}"
-RUN sbt --version
+# Install current SBT
+RUN apt-get update && apt-get install apt-transport-https
+RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
+RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add
+RUN apt-get update && apt-get install sbt
+RUN mkdir project && echo "sbt.version=1.3.3" > project/build.properties && echo "scalaVersion := \"2.13.1\"" > build.sbt
+RUN sbt sbtVersion
 
 # Install the AWS CLI
 RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
@@ -62,4 +56,4 @@ USER circleci
 # Define working directory
 WORKDIR /home/circleci
 
-RUN echo -e "Tag for this image:\n8u222-${SCALA_VERSION}-${KUBECTL_VERSION}"
+RUN echo -e "Tag for this image:\n11.0.5-${SCALA_VERSION}-${KUBECTL_VERSION}"
