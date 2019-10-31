@@ -1,27 +1,43 @@
-# Dockerfile with Scala, SBT, Kubernetes, AWS CLI and Docker
+# Builder image for Scala 2.13.x on JVM11
 
-This repository contains **Dockerfile** of:
-* [Scala](http://www.scala-lang.org)
-* [sbt](http://www.scala-sbt.org)
-* [kubectl](https://kubernetes.io/docs/reference/kubectl/overview/)
-* [AWS CLI](https://aws.amazon.com/cli/)
+Includes
+* [Scala 2.13.x](http://www.scala-lang.org)
+* [sbt 1.3.x](http://www.scala-sbt.org)
+* [kubectl (latest)](https://kubernetes.io/docs/reference/kubectl/overview/)
+* [AWS CLI (latest)](https://aws.amazon.com/cli/)
 * [Docker](https://www.docker.com/)
-* [Sonar-Scanner](https://docs.sonarqube.org/latest/)
+* [Sonar-Scanner (3.3.x)](https://docs.sonarqube.org/latest/)
 
 ## Base Docker Image ##
 
-* `circleci/openjdk:8u222-jdk-stretch` provides the JDK, SBT and Docker.
-  * [Dockerfile](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u222-jdk-stretch/Dockerfile)
+* `circleci/openjdk:11-jdk-stretch` provides the JDK and Docker.
+  * [Dockerfile](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/11.0.5-jdk-stretch/Dockerfile)
   * [background](https://circleci.com/docs/2.0/circleci-images/#openjdk)
-  * [Tag on Dockerhub](https://hub.docker.com/r/circleci/openjdk/tags?page=1&name=8u222-jdk-stretch)
+  * [Tag on Dockerhub](https://hub.docker.com/r/circleci/openjdk/tags?page=1&name=11-jdk-stretch)
   
 ## Additions ##
 
-We add Scala (version in tag), AWS CLI (latest), Kubectl (version in tag) and Sonar-Scanner (version `3.3`).
+We install and initialize `sbt` (latest 1.3.X) and `scala` (latest 2.13.X), the AWS CLI (latest), Kubectl (latest) and Sonar-Scanner (version `3.3`).
+
+## Usage ##
+
+If you use CircleCi, you can reference this image in your `.circleci/config.yml`:
+
+```yaml
+jobs:
+  build:
+    docker:
+      - image: moia/scala-on-circleci:java11
+    steps:
+      - checkout
+      - run: sbt compile
+```
+
+In your `build.sbt`, set `scalaVersion := "2.13.1"` and `scalacOptions := Seq("-target:11")`.
 
 ## Dockerhub ##
 
-This image is automatically released to Dockerhub for every tag: https://hub.docker.com/r/moia/scala-on-circleci
+This image is automatically released to Dockerhub for every tag: https://hub.docker.com/r/moia/scala-on-circleci/tags?page=1&name=java11
 
 ## License ##
 

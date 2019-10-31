@@ -3,17 +3,17 @@
 # - AWS CLI
 # - kubectl
 # - sonar-scanner
-# - Java 8 JDK (from base image)
-# - SBT (from base image)
+# - SBT (overwrites base image with newer version)
+# - Java 11.0.X JDK (from base image)
 # - Docker (from base image)
 
 # Pull base image (https://circleci.com/docs/2.0/circleci-images/#openjdk)
 # https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u232-jdk/Dockerfile
-FROM circleci/openjdk:11.0.5-jdk-stretch
+FROM circleci/openjdk:11-jdk-stretch
 
 # Environment variables
 ENV SCALA_VERSION=2.13.1
-ENV KUBECTL_VERSION=v1.16.1
+ENV SBT_VERSION=1.3.3
 ENV SONAR_SCANNER_VERSION=3.3.0.1492
 ENV SONAR_SCANNER_PACKAGE=sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
 
@@ -21,13 +21,15 @@ USER root
 
 SHELL ["/bin/bash", "-eo", "pipefail", "-x", "-c"]
 
+# Fix apt-get
+RUN apt-get update && apt-get install -y apt-transport-https
+
 # Install current SBT
-RUN apt-get update && apt-get install apt-transport-https
 RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
 RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add
 RUN apt-get update && apt-get install sbt
-RUN mkdir project && echo "sbt.version=1.3.3" > project/build.properties && echo "scalaVersion := \"2.13.1\"" > build.sbt
-RUN sbt sbtVersion
+RUN echo "scalaVersion := \"$SCALA_VERSION\"" > build.sbt
+RUN sbt sbtVersion scalaVersion -Dsbt.version=$SBT_VERSION
 
 # Install the AWS CLI
 RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
@@ -38,10 +40,10 @@ RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundl
   /usr/local/bin/aws --version
 
 # Install kubectl
-RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl && \
-  mv kubectl /usr/local/bin/kubectl && \
-  chmod +x /usr/local/bin/kubectl && \
-  kubectl version --client
+RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+RUN echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list
+RUN apt-get update && apt-get install -y kubectl
+RUN kubectl version --client
 
 # Install Sonar-Scanner
 RUN curl -LO https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/$SONAR_SCANNER_PACKAGE && \
@@ -56,4 +58,4 @@ USER circleci
 # Define working directory
 WORKDIR /home/circleci
 
-RUN echo -e "Tag for this image:\n11.0.5-${SCALA_VERSION}-${KUBECTL_VERSION}"
+RUN echo -e "Tag for this image:\njava11-${SCALA_VERSION}-${SBT_VERSION}"
