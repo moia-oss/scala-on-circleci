@@ -10,10 +10,10 @@ This repository contains **Dockerfile** of:
 
 ## Base Docker Image ##
 
-* `circleci/openjdk:8u222-jdk-stretch` provides the JDK, SBT and Docker.
-  * [Dockerfile](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u222-jdk-stretch/Dockerfile)
+* `circleci/openjdk:8u232-jdk-stretch` provides the JDK, SBT and Docker.
+  * [Dockerfile](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u232-jdk-stretch/Dockerfile)
   * [background](https://circleci.com/docs/2.0/circleci-images/#openjdk)
-  * [Tag on Dockerhub](https://hub.docker.com/r/circleci/openjdk/tags?page=1&name=8u222-jdk-stretch)
+  * [Tag on Dockerhub](https://hub.docker.com/r/circleci/openjdk/tags?page=1&name=8u232-jdk-stretch)
   
 ## Additions ##
 
