@@ -9,7 +9,7 @@
 
 # Pull base image (https://circleci.com/docs/2.0/circleci-images/#openjdk)
 # https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u212-jdk-stretch/Dockerfile
-FROM circleci/openjdk:8u222-jdk-stretch
+FROM circleci/openjdk:8u232-jdk-stretch
 
 # Environment variables
 ENV SCALA_VERSION=2.12.10
