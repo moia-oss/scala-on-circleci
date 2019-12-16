@@ -8,11 +8,12 @@
 # - Docker (from base image)
 
 # Pull base image (https://circleci.com/docs/2.0/circleci-images/#openjdk)
-# https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u212-jdk-stretch/Dockerfile
+# https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u232-jdk-stretch/Dockerfile
 FROM circleci/openjdk:8u232-jdk-stretch
 
 # Environment variables
 ENV SCALA_VERSION=2.12.10
+ENV SBT_VERSION=1.3.5
 ENV KUBECTL_VERSION=v1.14.8
 ENV SONAR_SCANNER_VERSION=3.3.0.1492
 ENV SONAR_SCANNER_PACKAGE=sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
@@ -31,7 +32,7 @@ RUN touch /usr/lib/jvm/java-8-openjdk-amd64/release && \
 RUN export TEMP="$(mktemp -d)" && \
     cd "${TEMP}" && \
     echo "class Question { def answer = 42 }" > Question.scala && \
-    sbt "set scalaVersion := \"${SCALA_VERSION}\"" compile && \
+    sbt -Dsbt.version=$SBT_VERSION "set scalaVersion := \"${SCALA_VERSION}\"" compile && \
     rm -r "${TEMP}"
 
 # Install the AWS CLI
@@ -61,4 +62,4 @@ USER circleci
 # Define working directory
 WORKDIR /home/circleci
 
-RUN echo -e "Tag for this image:\n8u232-${SCALA_VERSION}-${KUBECTL_VERSION}"
+RUN echo -e "Tag for this image:\n8u232-${SCALA_VERSION}-sbt-${SBT_VERSION}"
