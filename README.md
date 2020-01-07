@@ -14,14 +14,15 @@ This repository contains **Dockerfile** of:
   * [Dockerfile](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/8u222-jdk-stretch/Dockerfile)
   * [background](https://circleci.com/docs/2.0/circleci-images/#openjdk)
   * [Tag on Dockerhub](https://hub.docker.com/r/circleci/openjdk/tags?page=1&name=8u222-jdk-stretch)
-  
+
 ## Additions ##
 
 We add Scala (version in tag), AWS CLI (latest), Kubectl (version in tag) and Sonar-Scanner (version `3.3`).
 
 ## Dockerhub ##
 
-This image is automatically released to Dockerhub for every tag: https://hub.docker.com/r/moia/scala-on-circleci
+This image is automatically released to Dockerhub for every tag: https://hub.docker.com/repository/docker/moia/scala-on-circleci/builds
+
 
 ## License ##
 
