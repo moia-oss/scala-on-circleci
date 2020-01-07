@@ -14,7 +14,7 @@ Includes
   * [Dockerfile](https://github.com/CircleCI-Public/circleci-dockerfiles/blob/master/openjdk/images/11.0.5-jdk-stretch/Dockerfile)
   * [background](https://circleci.com/docs/2.0/circleci-images/#openjdk)
   * [Tag on Dockerhub](https://hub.docker.com/r/circleci/openjdk/tags?page=1&name=11-jdk-stretch)
-  
+
 ## Additions ##
 
 We install and initialize `sbt` (latest 1.3.X) and `scala` (latest 2.13.X), the AWS CLI (latest), Kubectl (latest) and Sonar-Scanner (version `3.3`).
@@ -37,7 +37,8 @@ In your `build.sbt`, set `scalaVersion := "2.13.1"` and `scalacOptions := Seq("-
 
 ## Dockerhub ##
 
-This image is automatically released to Dockerhub for every tag: https://hub.docker.com/r/moia/scala-on-circleci/tags?page=1&name=java11
+This image is automatically released to Dockerhub for every tag: https://hub.docker.com/repository/docker/moia/scala-on-circleci/builds
+
 
 ## License ##
 
