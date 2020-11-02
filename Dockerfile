@@ -28,8 +28,8 @@ RUN apt-get update && apt-get install -y apt-transport-https
 RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
 RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add
 RUN apt-get update && apt-get install sbt
-RUN echo "scalaVersion := \"$SCALA_VERSION\"" > build.sbt
-RUN sbt sbtVersion scalaVersion -Dsbt.version=$SBT_VERSION
+RUN echo "scalaVersion := \"${SCALA_VERSION}\"" > build.sbt
+RUN sbt sbtVersion scalaVersion -Dsbt.version=${SBT_VERSION} -Dsbt.rootdir=true
 
 # Install the AWS CLI
 RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
