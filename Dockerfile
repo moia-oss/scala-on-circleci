@@ -22,7 +22,10 @@ USER root
 SHELL ["/bin/bash", "-eo", "pipefail", "-x", "-c"]
 
 # Fix apt-get
-RUN apt-get update && apt-get install -y apt-transport-https
+RUN apt-get update \
+  && apt-get dist-upgrade -y \
+  && apt-get upgrade -y \
+  && apt-get install -y apt-transport-https
 
 # Install current SBT
 RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
