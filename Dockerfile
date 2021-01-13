@@ -24,12 +24,18 @@ SHELL ["/bin/bash", "-eo", "pipefail", "-x", "-c"]
 # Fix apt-get
 RUN apt-get update && apt-get install -y apt-transport-https
 
-# Install current SBT
-RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list
-RUN curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add
-RUN apt-get update && apt-get install sbt
-RUN echo "scalaVersion := \"${SCALA_VERSION}\"" > build.sbt
-RUN sbt sbtVersion scalaVersion -Dsbt.version=${SBT_VERSION} -Dsbt.rootdir=true
+# Install SBT
+RUN echo "deb https://dl.bintray.com/sbt/debian /" | tee -a /etc/apt/sources.list.d/sbt.list && \
+  curl -sL "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0x2EE0EA64E40A89B84B2DF73499E82A75642AC823" | apt-key add && \
+  apt-get update && \
+  apt-get install sbt
+
+# Install Scala
+RUN curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C /usr/share && \
+  mv /usr/share/scala-$SCALA_VERSION /usr/share/scala && \
+  chown -R root:root /usr/share/scala && \
+  chmod -R 755 /usr/share/scala && \
+  ln -s /usr/share/scala/bin/scala /usr/local/bin/scala
 
 # Install the AWS CLI
 RUN curl -sSL https://s3.amazonaws.com/aws-cli/awscli-bundle.zip -o awscli-bundle.zip && \
@@ -58,4 +64,13 @@ USER circleci
 # Define working directory
 WORKDIR /home/circleci
 
-RUN echo -e "Tag for this image:\njava11-${SCALA_VERSION}-${SBT_VERSION}"
+# Prepare sbt (warm cache)
+RUN sbt sbtVersion && \
+  mkdir -p project && \
+  echo "scalaVersion := \"${SCALA_VERSION}\"" > build.sbt && \
+  echo "sbt.version=${SBT_VERSION}" > project/build.properties && \
+  echo "case object Temp" > Temp.scala && \
+  sbt compile && \
+  rm -r project && rm build.sbt && rm Temp.scala && rm -r target
+
+RUN echo -e "Tag for this image:\njava11-${SCALA_VERSION}"
