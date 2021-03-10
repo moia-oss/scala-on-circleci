@@ -13,7 +13,7 @@ FROM circleci/openjdk:11-jdk-stretch
 
 # Environment variables
 ENV SCALA_VERSION=2.13.5
-ENV SBT_VERSION=1.4.8
+ENV SBT_VERSION=1.4.9
 ENV SONAR_SCANNER_VERSION=3.3.0.1492
 ENV SONAR_SCANNER_PACKAGE=sonar-scanner-cli-${SONAR_SCANNER_VERSION}.zip
 
