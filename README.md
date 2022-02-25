@@ -1,3 +1,7 @@
+**This project is archived.**
+
+---
+
 # Builder image for Scala 2.13.x on JVM11
 
 Includes
