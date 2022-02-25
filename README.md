@@ -39,10 +39,6 @@ jobs:
 
 In your `build.sbt`, set `scalaVersion := "2.13.1"` and `scalacOptions := Seq("-target:11")`.
 
-## Dockerhub ##
-
-This image is automatically released to Dockerhub for every tag: https://hub.docker.com/repository/docker/moia/scala-on-circleci/builds
-
 
 ## License ##
 
